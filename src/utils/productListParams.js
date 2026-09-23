@@ -1,3 +1,5 @@
+import { parseSort } from './productSort'
+
 export const ALLOWED_LIMITS = [10, 20, 50]
 export const DEFAULT_PAGE = 1
 export const DEFAULT_LIMIT = 10
@@ -27,19 +29,41 @@ export function parseProductListParams(searchParams) {
   return {
     page: parsePage(searchParams.get('page')),
     limit: parseLimit(searchParams.get('limit')),
+    search: searchParams.get('search')?.trim() || '',
+    category: searchParams.get('category')?.trim() || '',
+    sort: parseSort(searchParams.get('sort')),
+    delay: searchParams.get('delay')?.trim() || '',
   }
 }
 
-export function toProductListSearchParams({ page, limit }) {
-  return {
-    page: String(page),
-    limit: String(limit),
+export function toProductListSearchParams({ page, limit, search, category, sort, delay }) {
+  const params = {}
+
+  if (search) {
+    params.search = search
   }
+
+  if (category) {
+    params.category = category
+  }
+
+  if (sort) {
+    params.sort = sort
+  }
+
+  params.page = String(page)
+  params.limit = String(limit)
+
+  if (delay) {
+    params.delay = delay
+  }
+
+  return params
 }
 
 export function needsProductListParamSync(searchParams, parsed) {
   const normalized = toProductListSearchParams(parsed)
-  const keys = ['page', 'limit']
+  const keys = ['search', 'category', 'sort', 'page', 'limit', 'delay']
 
   return keys.some((key) => (searchParams.get(key) || '') !== (normalized[key] || ''))
 }
