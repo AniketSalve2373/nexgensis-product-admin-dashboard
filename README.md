@@ -1,16 +1,44 @@
-# React + Vite
+# Product Admin Dashboard
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+React + Vite admin dashboard for DummyJSON products. Authentication from stage 1 is unchanged.
 
-Currently, two official plugins are available:
+## Stack
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- React
+- JavaScript
+- Tailwind CSS
+- Axios
+- Vite
+- React Router
 
-## React Compiler
+## Product list (`/products`)
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+The URL is the source of truth for list state:
 
-## Expanding the ESLint configuration
+`/products?page=2&limit=20&search=phone&category=smartphones&sort=price-asc`
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+Refreshing or sharing the URL restores the same view. Invalid `page`, `limit`, and `sort` values are normalized (`page=1`, `limit=10`, default sort). Pages beyond the last page are clamped to the last valid page.
+
+Allowed page sizes: `10`, `20`, `50`.
+
+### Search + category
+
+DummyJSON cannot apply search and category together on one server endpoint.
+
+- Search only → `GET /products/search?q=`
+- Category only → `GET /products/category/:category`
+- Search and category → search on the server, then filter those results by category in the client
+- Sort uses DummyJSON `sortBy` / `order` for single-constraint requests, and client-side sorting when search and category are combined
+
+### Search race conditions
+
+Each product request is tied to an `AbortController`. When search, filters, sort, or pagination change, the previous request is aborted so a slower response (including DummyJSON `?delay=2000`) cannot replace newer results.
+
+The search input is debounced by 450ms and does not call the API on every keystroke.
+
+## Scripts
+
+```bash
+npm install
+npm run dev
+```
