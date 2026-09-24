@@ -2,9 +2,9 @@ import { Link } from 'react-router-dom'
 import ProductActions from './ProductActions'
 import { formatPrice, formatRating, getProductImage } from './productDisplay'
 
-export default function ProductTable({ products }) {
+export default function ProductTable({ products, onDelete }) {
   return (
-    <div className="overflow-x-auto rounded-xl border border-slate-200 bg-white shadow-sm">
+    <div className="overflow-x-auto rounded-xl border border-slate-200 bg-white shadow-xs">
       <table className="min-w-full divide-y divide-slate-200 text-left text-sm">
         <thead className="bg-slate-50">
           <tr>
@@ -33,13 +33,17 @@ export default function ProductTable({ products }) {
         </thead>
         <tbody className="divide-y divide-slate-200">
           {products.map((product) => (
-            <tr key={product.id} className="hover:bg-slate-50">
+            <tr key={product.id} className="hover:bg-slate-50/80 transition-colors">
               <td className="px-4 py-3">
-                <Link to={`/products/${product.id}`}>
+                <Link to={`/products/${product.id}`} className="block shrink-0">
                   <img
                     src={getProductImage(product)}
                     alt=""
                     className="h-12 w-12 rounded-lg border border-slate-200 object-cover"
+                    onError={(e) => {
+                      e.currentTarget.onerror = null
+                      e.currentTarget.src = 'https://via.placeholder.com/48?text=No+Img'
+                    }}
                   />
                 </Link>
               </td>
@@ -52,7 +56,7 @@ export default function ProductTable({ products }) {
                 </Link>
               </td>
               <td className="px-4 py-3 capitalize text-slate-600">{product.category}</td>
-              <td className="px-4 py-3 text-right tabular-nums text-slate-900">
+              <td className="px-4 py-3 text-right tabular-nums text-slate-900 font-medium">
                 {formatPrice(product.price)}
               </td>
               <td className="px-4 py-3 text-right tabular-nums text-slate-600">
@@ -60,7 +64,7 @@ export default function ProductTable({ products }) {
               </td>
               <td className="px-4 py-3 text-right tabular-nums text-slate-600">{product.stock}</td>
               <td className="px-4 py-3">
-                <ProductActions productId={product.id} />
+                <ProductActions product={product} onDelete={onDelete} />
               </td>
             </tr>
           ))}

@@ -22,6 +22,7 @@ export default function DashboardLayout() {
   const navigate = useNavigate()
   const { pathname } = useLocation()
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+  const [isCollapsed, setIsCollapsed] = useState(false)
 
   function handleLogout() {
     logout()
@@ -30,27 +31,39 @@ export default function DashboardLayout() {
 
   return (
     <div className="min-h-screen bg-slate-50 md:flex">
-      <aside className="hidden w-64 shrink-0 bg-slate-900 md:block">
-        <Sidebar onLogout={handleLogout} />
+      {/* Desktop Sidebar */}
+      <aside
+        className={`hidden shrink-0 bg-slate-900 transition-all duration-300 ease-in-out md:block ${
+          isCollapsed ? 'w-20' : 'w-64'
+        }`}
+      >
+        <Sidebar
+          onLogout={handleLogout}
+          isCollapsed={isCollapsed}
+          onToggleCollapse={() => setIsCollapsed((prev) => !prev)}
+        />
       </aside>
 
+      {/* Mobile Drawer */}
       {isMobileMenuOpen ? (
         <div className="fixed inset-0 z-40 md:hidden">
           <button
             type="button"
-            className="absolute inset-0 bg-slate-900/50"
+            className="absolute inset-0 bg-slate-900/60 backdrop-blur-xs transition-opacity"
             aria-label="Close navigation menu"
             onClick={() => setIsMobileMenuOpen(false)}
           />
-          <aside className="relative z-50 h-full w-64 bg-slate-900 shadow-xl">
+          <aside className="relative z-50 h-full w-64 bg-slate-900 shadow-2xl">
             <Sidebar
               onLogout={handleLogout}
               onNavigate={() => setIsMobileMenuOpen(false)}
+              isCollapsed={false}
             />
           </aside>
         </div>
       ) : null}
 
+      {/* Main Content Viewport */}
       <div className="flex min-h-screen min-w-0 flex-1 flex-col">
         <Header
           title={getPageTitle(pathname)}

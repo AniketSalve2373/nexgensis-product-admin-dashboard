@@ -71,3 +71,12 @@ export function addProduct(productData) {
   return api.post('/products/add', productData)
 }
 
+export function updateProduct(id, productData) {
+  return api.put(`/products/${encodeURIComponent(id)}`, productData)
+}
+
+export function deleteProduct(id) {
+  return api.delete(`/products/${encodeURIComponent(id)}`)
+}
+
+

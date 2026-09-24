@@ -2,15 +2,19 @@ import { Link } from 'react-router-dom'
 import ProductActions from './ProductActions'
 import { formatPrice, formatRating, getProductImage } from './productDisplay'
 
-export default function ProductCard({ product }) {
+export default function ProductCard({ product, onDelete }) {
   return (
-    <article className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
+    <article className="rounded-xl border border-slate-200 bg-white p-4 shadow-xs">
       <div className="flex gap-3">
         <Link to={`/products/${product.id}`} className="shrink-0">
           <img
             src={getProductImage(product)}
             alt=""
             className="h-16 w-16 rounded-lg border border-slate-200 object-cover"
+            onError={(e) => {
+              e.currentTarget.onerror = null
+              e.currentTarget.src = 'https://via.placeholder.com/64?text=No+Img'
+            }}
           />
         </Link>
         <div className="min-w-0 flex-1">
@@ -44,7 +48,7 @@ export default function ProductCard({ product }) {
       </dl>
 
       <div className="mt-4 border-t border-slate-100 pt-3">
-        <ProductActions productId={product.id} />
+        <ProductActions product={product} onDelete={onDelete} />
       </div>
     </article>
   )

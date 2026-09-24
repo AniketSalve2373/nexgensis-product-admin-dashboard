@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useLocation } from 'react-router-dom'
+import DeleteConfirmModal from '../components/products/DeleteConfirmModal'
 import ProductCard from '../components/products/ProductCard'
 import ProductFilters from '../components/products/ProductFilters'
 import ProductPagination from '../components/products/ProductPagination'
@@ -14,11 +15,14 @@ import { useProductList } from '../hooks/useProductList'
 export default function ProductsPage() {
   const location = useLocation()
   const [dismissedMessage, setDismissedMessage] = useState(null)
+  const [actionSuccessMessage, setActionSuccessMessage] = useState(null)
+  const [productToDelete, setProductToDelete] = useState(null)
 
-  const successBanner =
-    location.state?.successMessage && location.state.successMessage !== dismissedMessage
+  const activeMessage =
+    actionSuccessMessage ||
+    (location.state?.successMessage && location.state.successMessage !== dismissedMessage
       ? location.state.successMessage
-      : null
+      : null)
 
   const {
     products,
@@ -42,6 +46,19 @@ export default function ProductsPage() {
 
   const hasActiveFilters = Boolean(search || category || sort)
 
+  function handleDeleteSuccess(message) {
+    setProductToDelete(null)
+    setActionSuccessMessage(message)
+    retry()
+  }
+
+  function handleDismissBanner() {
+    setActionSuccessMessage(null)
+    if (location.state?.successMessage) {
+      setDismissedMessage(location.state.successMessage)
+    }
+  }
+
   return (
     <section>
       <div className="mb-6">
@@ -49,7 +66,7 @@ export default function ProductsPage() {
         <p className="mt-1 text-sm text-slate-500">Manage and review catalog products.</p>
       </div>
 
-      {successBanner ? (
+      {activeMessage ? (
         <div className="mb-6 flex items-center justify-between gap-3 rounded-lg border border-emerald-200 bg-emerald-50 p-4 text-sm text-emerald-800">
           <div className="flex items-center gap-2">
             <svg
@@ -65,11 +82,11 @@ export default function ProductsPage() {
                 clipRule="evenodd"
               />
             </svg>
-            <span>{successBanner}</span>
+            <span>{activeMessage}</span>
           </div>
           <button
             type="button"
-            onClick={() => setDismissedMessage(location.state?.successMessage)}
+            onClick={handleDismissBanner}
             className="text-emerald-700 hover:text-emerald-900 font-bold"
             aria-label="Dismiss banner"
           >
@@ -108,11 +125,11 @@ export default function ProductsPage() {
       {!isLoading && !hasError && products.length > 0 ? (
         <>
           <div className="hidden lg:block">
-            <ProductTable products={products} />
+            <ProductTable products={products} onDelete={setProductToDelete} />
           </div>
           <div className="grid gap-4 lg:hidden">
             {products.map((product) => (
-              <ProductCard key={product.id} product={product} />
+              <ProductCard key={product.id} product={product} onDelete={setProductToDelete} />
             ))}
           </div>
           <ProductPagination
@@ -123,6 +140,14 @@ export default function ProductsPage() {
             onLimitChange={setLimit}
           />
         </>
+      ) : null}
+
+      {productToDelete ? (
+        <DeleteConfirmModal
+          product={productToDelete}
+          onClose={() => setProductToDelete(null)}
+          onSuccess={handleDeleteSuccess}
+        />
       ) : null}
     </section>
   )
