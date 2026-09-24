@@ -62,3 +62,12 @@ export function getProductsByCategory({
 export function getProductCategories({ signal } = {}) {
   return api.get('/products/categories', { signal })
 }
+
+export function getProductById(id, { signal } = {}) {
+  return api.get(`/products/${encodeURIComponent(id)}`, { signal })
+}
+
+export function addProduct(productData) {
+  return api.post('/products/add', productData)
+}
+

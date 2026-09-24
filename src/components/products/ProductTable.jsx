@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom'
 import ProductActions from './ProductActions'
 import { formatPrice, formatRating, getProductImage } from './productDisplay'
 
@@ -34,14 +35,21 @@ export default function ProductTable({ products }) {
           {products.map((product) => (
             <tr key={product.id} className="hover:bg-slate-50">
               <td className="px-4 py-3">
-                <img
-                  src={getProductImage(product)}
-                  alt=""
-                  className="h-12 w-12 rounded-lg border border-slate-200 object-cover"
-                />
+                <Link to={`/products/${product.id}`}>
+                  <img
+                    src={getProductImage(product)}
+                    alt=""
+                    className="h-12 w-12 rounded-lg border border-slate-200 object-cover"
+                  />
+                </Link>
               </td>
               <td className="max-w-xs px-4 py-3 font-medium break-words text-slate-900">
-                {product.title}
+                <Link
+                  to={`/products/${product.id}`}
+                  className="hover:text-indigo-600 hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                >
+                  {product.title}
+                </Link>
               </td>
               <td className="px-4 py-3 capitalize text-slate-600">{product.category}</td>
               <td className="px-4 py-3 text-right tabular-nums text-slate-900">
@@ -52,7 +60,7 @@ export default function ProductTable({ products }) {
               </td>
               <td className="px-4 py-3 text-right tabular-nums text-slate-600">{product.stock}</td>
               <td className="px-4 py-3">
-                <ProductActions />
+                <ProductActions productId={product.id} />
               </td>
             </tr>
           ))}
