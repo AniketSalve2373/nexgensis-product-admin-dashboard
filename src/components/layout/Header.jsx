@@ -1,22 +1,38 @@
 import { useState } from 'react'
 
-export default function Header({ title, user, onLogout, onOpenMenu }) {
+function UserAvatar({ user }) {
   const [imageError, setImageError] = useState(false)
 
+  const firstName = user?.firstName || 'Emily'
+  const lastName = user?.lastName || 'Johnson'
+  const initials = `${firstName[0] || ''}${lastName[0] || ''}`.toUpperCase() || 'EJ'
+
+  const showImage = Boolean(
+    user?.image && !imageError && !user.image.includes('dummyjson.com')
+  )
+
+  return (
+    <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-indigo-100 text-indigo-700 font-semibold text-xs border border-indigo-200 shadow-2xs select-none">
+      {showImage ? (
+        <img
+          src={user.image}
+          alt={`${firstName} ${lastName}`}
+          onError={() => setImageError(true)}
+          className="h-full w-full rounded-full object-cover"
+        />
+      ) : (
+        <span>{initials}</span>
+      )}
+    </div>
+  )
+}
+
+export default function Header({ title, user, onLogout, onOpenMenu }) {
   const displayName = user
     ? [user.firstName, user.lastName].filter(Boolean).join(' ') || user.username
     : 'Emily Johnson'
 
-  const userEmail = user?.email || 'emily.johnson@x.dummyjson.com'
-
-  const initials =
-    displayName
-      .split(' ')
-      .map((n) => n[0])
-      .filter(Boolean)
-      .slice(0, 2)
-      .join('')
-      .toUpperCase() || 'EJ'
+  const displayEmail = user?.email || 'emily.johnson@x.dummyjson.com'
 
   return (
     <header className="flex items-center justify-between gap-4 border-b border-slate-200 bg-white px-4 py-3 sm:px-6">
@@ -44,35 +60,24 @@ export default function Header({ title, user, onLogout, onOpenMenu }) {
       </div>
 
       <div className="flex items-center gap-3 sm:gap-4">
-        {/* User Info Container: [Avatar] [Name + Email] */}
-        <div className="flex items-center gap-3">
-          {user?.image && !imageError ? (
-            <img
-              src={user.image}
-              alt={displayName}
-              onError={() => setImageError(true)}
-              className="h-9 w-9 shrink-0 rounded-full border border-slate-200 bg-slate-100 object-cover shadow-xs"
-            />
-          ) : (
-            <div
-              className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-indigo-600 text-xs font-semibold text-white shadow-xs ring-2 ring-indigo-100 select-none"
-              aria-label={displayName}
-              title={displayName}
-            >
-              {initials}
-            </div>
-          )}
-
-          <div className="hidden text-left sm:block">
-            <p className="text-sm font-semibold leading-tight text-slate-900">{displayName}</p>
-            <p className="text-xs font-normal leading-tight text-slate-500">{userEmail}</p>
+        <div className="flex items-center gap-2.5">
+          <UserAvatar user={user} />
+          <div className="hidden sm:flex sm:flex-col justify-center text-left">
+            <span className="text-sm font-semibold text-slate-900 leading-tight">
+              {displayName}
+            </span>
+            {displayEmail ? (
+              <span className="text-xs text-slate-500 leading-tight">
+                {displayEmail}
+              </span>
+            ) : null}
           </div>
         </div>
 
         <button
           type="button"
           onClick={onLogout}
-          className="rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-sm font-medium text-slate-700 shadow-xs hover:bg-slate-50 hover:text-slate-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+          className="inline-flex items-center justify-center rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-sm font-medium text-slate-700 hover:bg-slate-50 hover:text-slate-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 transition-colors"
         >
           Logout
         </button>
