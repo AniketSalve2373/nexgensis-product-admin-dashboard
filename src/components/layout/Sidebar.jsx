@@ -13,7 +13,11 @@ export default function Sidebar({ onNavigate, onLogout, isCollapsed, onToggleCol
   return (
     <div className="flex h-full flex-col bg-slate-900 text-slate-100 select-none">
       {/* Brand Header */}
-      <div className="flex h-16 items-center justify-between border-b border-slate-800 px-4">
+      <div
+        className={`flex h-16 items-center border-b border-slate-800 ${
+          isCollapsed ? 'justify-between px-2' : 'justify-between px-4'
+        }`}
+      >
         {!isCollapsed ? (
           <div className="min-w-0">
             <p className="text-[10px] font-bold uppercase tracking-wider text-indigo-400">
@@ -22,7 +26,7 @@ export default function Sidebar({ onNavigate, onLogout, isCollapsed, onToggleCol
             <p className="truncate text-base font-bold text-white">Product Admin</p>
           </div>
         ) : (
-          <div className="mx-auto flex h-9 w-9 items-center justify-center rounded-lg bg-indigo-600 text-sm font-extrabold text-white">
+          <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-indigo-600 text-xs font-extrabold text-white">
             NX
           </div>
         )}
@@ -32,24 +36,35 @@ export default function Sidebar({ onNavigate, onLogout, isCollapsed, onToggleCol
           <button
             type="button"
             onClick={onToggleCollapse}
-            className={`hidden h-8 w-8 items-center justify-center rounded-lg border border-slate-700 bg-slate-800 text-slate-300 hover:bg-slate-700 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-indigo-500 md:flex ${
-              isCollapsed ? 'mx-auto mt-2' : ''
-            }`}
+            className="hidden h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-slate-700 bg-slate-800 text-slate-300 transition-colors hover:bg-slate-700 hover:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-indigo-500 md:flex"
             aria-label={isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
             title={isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
           >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              strokeWidth="2"
-              stroke="currentColor"
-              className={`h-4 w-4 transition-transform duration-300 ${
-                isCollapsed ? 'rotate-180' : ''
-              }`}
-            >
-              <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
-            </svg>
+            {isCollapsed ? (
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth="2"
+                stroke="currentColor"
+                className="h-4 w-4"
+                aria-hidden="true"
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+              </svg>
+            ) : (
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth="2"
+                stroke="currentColor"
+                className="h-4 w-4"
+                aria-hidden="true"
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
+              </svg>
+            )}
           </button>
         ) : null}
       </div>
@@ -62,6 +77,7 @@ export default function Sidebar({ onNavigate, onLogout, isCollapsed, onToggleCol
           onClick={onNavigate}
           end
           title={isCollapsed ? 'Products' : undefined}
+          aria-label={isCollapsed ? 'Products' : undefined}
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -86,6 +102,7 @@ export default function Sidebar({ onNavigate, onLogout, isCollapsed, onToggleCol
           className={linkClass}
           onClick={onNavigate}
           title={isCollapsed ? 'Add Product' : undefined}
+          aria-label={isCollapsed ? 'Add Product' : undefined}
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -108,7 +125,8 @@ export default function Sidebar({ onNavigate, onLogout, isCollapsed, onToggleCol
           type="button"
           onClick={onLogout}
           title={isCollapsed ? 'Logout' : undefined}
-          className={`flex w-full items-center gap-3 rounded-lg py-2.5 text-sm font-medium text-slate-300 hover:bg-slate-800 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-indigo-400 ${
+          aria-label={isCollapsed ? 'Logout' : undefined}
+          className={`flex w-full items-center gap-3 rounded-lg py-2.5 text-sm font-medium text-slate-300 transition-colors hover:bg-slate-800 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-indigo-400 ${
             isCollapsed ? 'justify-center px-2' : 'px-3'
           }`}
         >
@@ -133,3 +151,4 @@ export default function Sidebar({ onNavigate, onLogout, isCollapsed, onToggleCol
     </div>
   )
 }
+

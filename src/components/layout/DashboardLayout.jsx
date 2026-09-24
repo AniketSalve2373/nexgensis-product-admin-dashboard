@@ -33,7 +33,7 @@ export default function DashboardLayout() {
     <div className="min-h-screen bg-slate-50 md:flex">
       {/* Desktop Sidebar */}
       <aside
-        className={`hidden shrink-0 bg-slate-900 transition-all duration-300 ease-in-out md:block ${
+        className={`hidden shrink-0 bg-slate-900 overflow-x-hidden transition-all duration-200 ease-in-out md:block ${
           isCollapsed ? 'w-20' : 'w-64'
         }`}
       >
