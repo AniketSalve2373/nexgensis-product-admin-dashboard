@@ -4,21 +4,22 @@ const SEARCH_DEBOUNCE_MS = 450
 
 export default function ProductSearch({ value, onSearch }) {
   const [inputValue, setInputValue] = useState(value)
-  const [urlValue, setUrlValue] = useState(value)
-
-  // Keep the input in sync when the URL search changes (back/forward, clear filters).
-  if (value !== urlValue) {
-    setUrlValue(value)
-    setInputValue(value)
-  }
 
   useEffect(() => {
+    setInputValue(value)
+  }, [value])
+
+  useEffect(() => {
+    if (inputValue === value) {
+      return
+    }
+
     const timeoutId = window.setTimeout(() => {
       onSearch(inputValue)
     }, SEARCH_DEBOUNCE_MS)
 
     return () => window.clearTimeout(timeoutId)
-  }, [inputValue, onSearch])
+  }, [inputValue, value, onSearch])
 
   return (
     <label className="block min-w-0 flex-1">

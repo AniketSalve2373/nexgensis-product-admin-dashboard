@@ -50,6 +50,10 @@ async function waitFor(ws, expression, timeoutMs = 15000) {
     }
     await delay(250)
   }
+  const currentHref = await evaluate(ws, 'location.href')
+  const bodyText = await evaluate(ws, 'document.body.innerText')
+  console.log('DEBUG TIMEOUT HREF:', currentHref)
+  console.log('DEBUG TIMEOUT BODY:', bodyText)
   throw new Error(`Timed out waiting for: ${expression}`)
 }
 
@@ -169,7 +173,7 @@ try {
       `({
         href: location.href,
         text: document.body.innerText,
-        hasTable: Boolean(document.querySelector('table')),
+        hasTable: Boolean(document.querySelector('table') && document.querySelector('table').offsetParent !== null),
         cardCount: document.querySelectorAll('article').length,
         width: document.documentElement.clientWidth,
       })`,

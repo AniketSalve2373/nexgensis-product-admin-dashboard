@@ -18,6 +18,31 @@ export default function ProductPagination({
   const isFirstPage = page <= 1
   const isLastPage = page >= totalPages
 
+  function handlePrevious() {
+    if (!isFirstPage) {
+      onPageChange(page - 1)
+    }
+  }
+
+  function handleNext() {
+    if (!isLastPage) {
+      onPageChange(page + 1)
+    }
+  }
+
+  function handlePageClick(pageNumber) {
+    if (pageNumber !== page && pageNumber >= 1 && pageNumber <= totalPages) {
+      onPageChange(pageNumber)
+    }
+  }
+
+  function handleLimitChange(event) {
+    const newLimit = Number(event.target.value)
+    if (newLimit !== limit) {
+      onLimitChange(newLimit)
+    }
+  }
+
   return (
     <div className="mt-4 flex flex-col gap-4 rounded-xl border border-slate-200 bg-white px-4 py-3 shadow-sm sm:flex-row sm:flex-wrap sm:items-center sm:justify-between">
       <p className="text-sm text-slate-600">
@@ -30,7 +55,7 @@ export default function ProductPagination({
           Page size
           <select
             value={limit}
-            onChange={(event) => onLimitChange(Number(event.target.value))}
+            onChange={handleLimitChange}
             className="rounded-lg border border-slate-300 bg-white px-2 py-1.5 text-sm text-slate-900 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-200"
           >
             {ALLOWED_LIMITS.map((size) => (
@@ -44,7 +69,7 @@ export default function ProductPagination({
         <nav className="flex flex-wrap items-center gap-1" aria-label="Product pagination">
           <button
             type="button"
-            onClick={() => onPageChange(page - 1)}
+            onClick={handlePrevious}
             disabled={isFirstPage}
             className="rounded-lg border border-slate-200 px-3 py-1.5 text-sm font-medium text-slate-700 hover:bg-slate-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 disabled:cursor-not-allowed disabled:text-slate-400 disabled:hover:bg-white"
           >
@@ -58,7 +83,7 @@ export default function ProductPagination({
               <button
                 key={pageNumber}
                 type="button"
-                onClick={() => onPageChange(pageNumber)}
+                onClick={() => handlePageClick(pageNumber)}
                 aria-current={isCurrent ? 'page' : undefined}
                 className={
                   isCurrent
@@ -73,7 +98,7 @@ export default function ProductPagination({
 
           <button
             type="button"
-            onClick={() => onPageChange(page + 1)}
+            onClick={handleNext}
             disabled={isLastPage}
             className="rounded-lg border border-slate-200 px-3 py-1.5 text-sm font-medium text-slate-700 hover:bg-slate-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 disabled:cursor-not-allowed disabled:text-slate-400 disabled:hover:bg-white"
           >
